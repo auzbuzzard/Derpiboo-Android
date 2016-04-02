@@ -28,9 +28,9 @@ public class DBImage {
     //Mark: Data Fields
     //
 
-    int id_number;
-    URL imageURL; //Nullable
-    Representations representations;
+    int id_number; //Essential
+    URL imageURL; //Essential
+    Representations representations; //Essential
     public URL thumbnail() {
         return representations.thumb;
     }
@@ -49,5 +49,15 @@ public class DBImage {
     //
 
     Image image;
+    public static class RepresentationsImage {
+        Image thumb_tiny;
+        Image thumb_small;
+        Image thumb;
+        Image small;
+        Image medium;
+        Image large;
+        Image tall;
+        Image full;
+    }
 
 }
