@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    buildToolsVersion '26.0.2'
 
     defaultConfig {
         applicationId "com.austinmchau.derpiboo"
@@ -24,4 +24,9 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.2.1'
     compile 'com.android.support:design:23.2.1'
+    compile 'com.android.support:support-v4:23.2.1'
+    compile 'com.android.support:recyclerview-v7:23.0.+'
+    compile 'com.android.support:cardview-v7:23.0.+'
+
+    compile 'com.mcxiaoke.volley:library-aar:1.0.0'
 }

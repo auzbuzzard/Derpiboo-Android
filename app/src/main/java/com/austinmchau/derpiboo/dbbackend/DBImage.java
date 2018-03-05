@@ -1,27 +1,31 @@
 package com.austinmchau.derpiboo.dbbackend;
 
-import android.media.Image;
-import android.util.Log;
+import android.content.Context;
+import android.graphics.Bitmap;
+
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
-/**
- * Created by Austin on 4/1/16.
- */
 public class DBImage {
 
     public final static String TAG = "Derpiboo";
+    public final static String httpType = "http:";
 
     public static class Representations {
-        URL thumb_tiny;
-        URL thumb_small;
-        URL thumb;
-        URL small;
-        URL medium;
-        URL large;
-        URL tall;
-        URL full;
+        String thumb_tiny;
+        String thumb_small;
+        String thumb;
+        String small;
+        String medium;
+        String large;
+        String tall;
+        String full;
+
+
     }
 
     //
@@ -29,35 +33,87 @@ public class DBImage {
     //
 
     int id_number; //Essential
-    URL imageURL; //Essential
+    String imageURL; //Essential
     Representations representations; //Essential
-    public URL thumbnail() {
+    public String thumbURL;
+    public String thumbnail() {
         return representations.thumb;
     }
 
-    DBImage(int id_number, String imageURLString) {
+    DBImage(int id_number, String imageURLString, Representations representations) {
         this.id_number = id_number;
-        try {
-            this.imageURL = new URL("http:" + imageURLString);
-        } catch (MalformedURLException error) {
-            Log.d(TAG, error.toString());
-        }
+        this.imageURL = imageURLString;
+        this.representations = representations;
+    }
+
+    //Getter
+    public int getId_number() {
+        return  id_number;
     }
 
     //
     //Mark: Data Store
     //
 
-    Image image;
+    Bitmap image; // Full Image
+
     public static class RepresentationsImage {
-        Image thumb_tiny;
-        Image thumb_small;
-        Image thumb;
-        Image small;
-        Image medium;
-        Image large;
-        Image tall;
-        Image full;
+        Bitmap thumb_tiny;
+        Bitmap thumb_small;
+        Bitmap thumb;
+        Bitmap small;
+        Bitmap medium;
+        Bitmap large;
+        Bitmap tall;
+        Bitmap full;
     }
+
+    RepresentationsImage representationsImage = new RepresentationsImage();
+
+    public Bitmap thumbImage() {
+        return representationsImage.thumb;
+    }
+
+    public void setThumbImage(Bitmap image) {
+        representationsImage.thumb = image;
+    }
+
+    //
+    //Mark: public methods
+    //
+
+    public void downloadThumb(Context context, final DBImageBitmapListener listener) {
+        if (thumbImage() == null) {
+            ImageRequest request = new ImageRequest(thumbnail(),
+                    new Response.Listener<Bitmap>() {
+                        @Override
+                        public void onResponse(Bitmap response) {
+                            setThumbImage(response);
+                            listener.onLoadingComplete(DBImage.this);
+                        }
+                    }, 0, 0, null,
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            error.printStackTrace();
+                        }
+                    });
+            VolleyRequestQueue.getInstance(context).addToRequestQueue(request);
+        }
+    }
+
+    //
+    //Mark: Convenience
+    //
+    public static URL stringToUrl(String url) {
+        URL u = null;
+        try {
+            new URL(httpType + url);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return u;
+    }
+
 
 }
